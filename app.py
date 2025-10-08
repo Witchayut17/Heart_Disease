@@ -16,10 +16,6 @@ st.markdown(
         min-height: 90vh;
         flex-direction: column;
     }
-    .centered-form {
-        width: 600px;
-        max-width: 90vw;
-    }
     </style>
     """, unsafe_allow_html=True
 )
