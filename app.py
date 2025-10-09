@@ -3,7 +3,7 @@ import streamlit as st
 import pickle
 import numpy as np
 
-st.set_page_config(page_title="แชทบอทประเมินความเสี่ยงโรคหัวใจ", layout="wide")
+st.set_page_config(page_title="แบบฟอร์มประเมินความเสี่ยงโรคหัวใจ", layout="wide")
 
 # ใส่ CSS เพื่อจัด container ให้อยู่กลางหน้าจอ
 st.markdown(
@@ -19,7 +19,7 @@ st.markdown(
     """, unsafe_allow_html=True
 )
 
-st.title("❤️ แชทบอทประเมินความเสี่ยงโรคหัวใจ")
+st.title("แบบฟอร์มประเมินความเสี่ยงโรคหัวใจ")
 
 @st.cache_resource
 def load_model_and_scaler():
