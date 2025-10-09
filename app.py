@@ -36,7 +36,7 @@ with st.container():
     with st.container():
         st.markdown('<div class="centered-form">', unsafe_allow_html=True)
 
-        st.subheader("🩺 ป้อนข้อมูลสุขภาพของคุณ")
+        st.subheader("ป้อนข้อมูลสุขภาพของคุณ")
 
         c1, c2, c3 = st.columns([2, 1, 2])
         with c1:
