@@ -1,6 +1,7 @@
 import streamlit as st
 import numpy as np
 import joblib
+import pandas as pd
 
 st.set_page_config(page_title="แบบฟอร์มประเมินความเสี่ยงโรคหัวใจ", layout="wide")
 st.title("แบบฟอร์มประเมินความเสี่ยงโรคหัวใจ")
@@ -11,12 +12,25 @@ def load_model():
 
 model = load_model()
 
+# โหลดข้อมูลจริงและคำนวณสัดส่วนคลาส
+@st.cache_data
+def load_data():
+    df = pd.read_csv('output/processed_final.csv')
+    df['target'] = df['target'].apply(lambda x: 2 if x in [3,4] else 1 if x in [1,2] else 0)
+    counts = df['target'].value_counts().sort_index()
+    total = counts.sum()
+    percent_0 = counts.get(0, 0) / total * 100
+    percent_1 = counts.get(1, 0) / total * 100
+    percent_2 = counts.get(2, 0) / total * 100
+    return counts, (percent_0, percent_1, percent_2)
+
+counts, (percent_0, percent_1, percent_2) = load_data()
+
 col1, col_right = st.columns([1, 1])
 
 with col1:
     st.subheader("ป้อนข้อมูลสุขภาพของคุณ")
     with st.form(key='heart_risk_form'):
-        # --- ช่องกรอกข้อมูล (ตัวอย่างเหมือนเดิม) ---
         thal = st.selectbox('ภาวะธาลัสซีเมีย (thal)', options=[3,6,7],
                             format_func=lambda x: {3:"ปกติ",6:"ข้อบกพร่องถาวร",7:"ข้อบกพร่องกลับคืนได้"}[x])
 
@@ -82,7 +96,6 @@ with col1:
             proba = model.predict_proba(input_data)[0]
             st.write(f"ความน่าจะเป็นของแต่ละคลาส: Class 0: {proba[0]:.2f}, Class 1: {proba[1]:.2f}, Class 2: {proba[2]:.2f}")
 
-            # กำหนด threshold สำหรับแต่ละคลาส (ปรับได้ตามต้องการ)
             threshold_1 = 0.15
             threshold_2 = 0.15
 
@@ -107,11 +120,11 @@ with col1:
 with col_right:
     st.subheader("คู่มือการกรอกแบบฟอร์ม")
     with st.expander("📌 ข้อมูลสรุปและวิธีกรอกข้อมูล", expanded=True):
-        st.markdown("""
+        st.markdown(f"""
         ### สรุปข้อมูลตัวอย่างตามคลาสเป้าหมาย (target)
-        - Class 0: 33 ตัวอย่าง (54.10%)
-        - Class 1: 18 ตัวอย่าง (รวมคลาส 1 และ 2 เดิม)
-        - Class 2: 10 ตัวอย่าง (รวมคลาส 3 และ 4 เดิม)
+        - Class 0: {counts.get(0, 0)} ตัวอย่าง ({percent_0:.2f}%)
+        - Class 1: {counts.get(1, 0)} ตัวอย่าง ({percent_1:.2f}%)
+        - Class 2: {counts.get(2, 0)} ตัวอย่าง ({percent_2:.2f}%)
         """)
 
         col_a, col_b, col_c = st.columns(3)
@@ -158,3 +171,4 @@ with col_right:
             - trestbps: > 160 mm Hg
             - chol: > 300 mg/dL  
             """)
+
