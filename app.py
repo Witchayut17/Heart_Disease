@@ -37,40 +37,35 @@ X_test, y_test = load_test_data()
 with st.container():
     st.markdown('<div class="centered-container">', unsafe_allow_html=True)
 
-    st.subheader("ป้อนข้อมูลสุขภาพของคุณ (ฟีเจอร์สำคัญเรียงก่อน)")
+    st.subheader("ป้อนข้อมูลสุขภาพของคุณ (ฟีเจอร์สำคัญเรียงตามโมเดล)")
 
     c1, c2, c3 = st.columns(3)
     with c1:
-        thal = st.selectbox('ภาวะธาลัสซีเมีย (thal)', options=[3, 6, 7], format_func=lambda x: {3:"ปกติ",6:"ข้อบกพร่องถาวร",7:"ข้อบกพร่องกลับคืนได้"}[x])
-    with c2:
         cp = st.selectbox('ประเภทอาการเจ็บหน้าอก (cp)', options=[1, 2, 3, 4])
-    with c3:
-        ca = st.selectbox('จำนวนเส้นเลือดใหญ่ที่มีปัญหา (ca)', options=[0,1,2,3,4])
-
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        oldpeak = st.number_input('ST depression (oldpeak)', 0.0, 10.0, 1.0, format="%.1f")
-    with c2:
-        thalach = st.number_input('อัตราการเต้นหัวใจสูงสุด (thalach)', 60, 250, 150)
-    with c3:
-        exang = st.selectbox('เจ็บหน้าอกจากออกกำลังกาย (exang)', options=[0,1], format_func=lambda x: "ไม่มี" if x==0 else "มี")
-
-    c1, c2, c3 = st.columns(3)
-    with c1:
-        chol = st.number_input('คอเลสเตอรอล (chol)', 100, 600, 200)
     with c2:
         trestbps = st.number_input('ความดันโลหิตขณะพัก (trestbps)', 50, 250, 120)
     with c3:
-        age = st.number_input('อายุ', 1, 120, 50)
+        chol = st.number_input('คอเลสเตอรอล (chol)', 100, 600, 200)
+
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        thalach = st.number_input('อัตราการเต้นหัวใจสูงสุด (thalach)', 60, 250, 150)
+    with c2:
+        exang = st.selectbox('เจ็บหน้าอกจากออกกำลังกาย (exang)', options=[0,1], format_func=lambda x: "ไม่มี" if x==0 else "มี")
+    with c3:
+        oldpeak = st.number_input('ST depression (oldpeak)', 0.0, 10.0, 1.0, format="%.1f")
 
     c1, c2 = st.columns(2)
     with c1:
-        sex = st.selectbox('เพศ', options=[0, 1], format_func=lambda x: 'หญิง' if x == 0 else 'ชาย')
+        ca = st.selectbox('จำนวนเส้นเลือดใหญ่ที่มีปัญหา (ca)', options=[0,1,2,3,4])
     with c2:
-        fbs = st.selectbox('น้ำตาลในเลือดขณะอดอาหาร (fbs)', options=[0, 1], format_func=lambda x: 'ไม่เกิน 120' if x == 0 else 'มากกว่า 120')
+        thal = st.selectbox('ภาวะธาลัสซีเมีย (thal)', options=[3, 6, 7], format_func=lambda x: {3:"ปกติ",6:"ข้อบกพร่องถาวร",7:"ข้อบกพร่องกลับคืนได้"}[x])
 
-    restecg = st.selectbox('ผลคลื่นไฟฟ้าหัวใจขณะพัก (restecg)', options=[0, 1, 2])
-    slope = st.selectbox('ความชันของ ST segment (slope)', options=[1, 2, 3])
+    c1, c2 = st.columns(2)
+    with c1:
+        age = st.number_input('อายุ', 1, 120, 50)
+    with c2:
+        sex = st.selectbox('เพศ', options=[0, 1], format_func=lambda x: 'หญิง' if x == 0 else 'ชาย')
 
     if st.button('ทำนายความเสี่ยง'):
         input_data = np.array([[
@@ -102,6 +97,5 @@ with st.container():
 
         except Exception as e:
             st.error(f"เกิดข้อผิดพลาดในการทำนาย: {e}")
-
 
     st.markdown('</div>', unsafe_allow_html=True)
