@@ -94,7 +94,6 @@ with col1:
 
         try:
             proba = model.predict_proba(input_data)[0]
-            st.write(f"ความน่าจะเป็นของแต่ละคลาส: Class 0: {proba[0]:.2f}, Class 1: {proba[1]:.2f}, Class 2: {proba[2]:.2f}")
 
             new_class = int(np.argmax(proba))
 
