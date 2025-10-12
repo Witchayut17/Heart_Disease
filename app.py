@@ -34,7 +34,7 @@ with col3:
     age = st.slider('อายุ', 1, 120, 50)
 
 if st.button('ทำนายความเสี่ยง'):
-    input_data = np.array([[  
+    input_data = np.array([[ 
         int(cp), float(trestbps), float(chol), float(thalach), int(exang),
         float(oldpeak), int(ca), int(thal), float(age), int(sex)
     ]])
@@ -42,21 +42,10 @@ if st.button('ทำนายความเสี่ยง'):
     try:
         prediction = model.predict(input_data)[0]
 
-        # ข้อความคำอธิบายแต่ละคลาส
-        class_dict = {
-            0: "ความเสี่ยงต่ำ ไม่เป็นโรคหัวใจ",
-            1: "ความเสี่ยงระดับต่ำถึงปานกลาง",
-            2: "ความเสี่ยงระดับปานกลาง",
-            3: "ความเสี่ยงระดับสูง",
-            4: "ความเสี่ยงสูงมาก"
-        }
-
-        result_text = class_dict.get(prediction, "ไม่ทราบคลาส")
-
         if prediction == 0:
-            st.success(f"✅ ผลลัพธ์: เป็นคลาส {prediction} — {result_text}")
+            st.success("✅ ผลลัพธ์: ความเสี่ยงต่ำ ไม่เป็นโรคหัวใจ (Class 0)")
         else:
-            st.error(f"⚠️ ผลลัพธ์: เป็นคลาส {prediction} — {result_text}")
+            st.error(f"⚠️ ผลลัพธ์: มีความเสี่ยงเป็นโรคหัวใจ (Class {prediction})")
 
     except Exception as e:
         st.error(f"เกิดข้อผิดพลาดในการทำนาย: {e}")
@@ -71,21 +60,30 @@ st.markdown("""
   - exang: ไม่มี (0)
   - oldpeak: ต่ำกว่า 1.0
   - thalach: สูง (150 ขึ้นไป)
-  - chol, trestbps, age: อยู่ในช่วงปกติ
-  
+  - chol (คอเลสเตอรอล): ต่ำกว่า 240 mg/dL
+  - trestbps (ความดันโลหิตขณะพัก): ต่ำกว่า 130 mm Hg
+  - age (อายุ): ต่ำกว่า 50 ปี
+  - sex: ชาย/หญิง (ไม่มีผลเฉพาะเจาะจง)
+
 - **Class 1 - 3 (ความเสี่ยงปานกลาง):**
-  - cp: 2-3
+  - cp: 2-3 (เจ็บปานกลาง)
   - ca: 1-3
   - exang: อาจมี (0 หรือ 1)
-  - oldpeak: ประมาณ 1-2.5
+  - oldpeak: ประมาณ 1.0-2.5
   - thalach: กลางๆ (120-150)
-  - chol, trestbps, age: ค่อยๆเพิ่มขึ้น
-  
+  - chol: 240-300 mg/dL
+  - trestbps: 130-160 mm Hg
+  - age: 50-65 ปี
+  - sex: ชาย/หญิง
+
 - **Class 4 (ความเสี่ยงสูง):**
   - cp: 4 (เจ็บมาก)
   - ca: 3-4 (เส้นเลือดใหญ่มีปัญหาหนัก)
   - exang: มี (1)
   - oldpeak: สูงกว่า 2.5
   - thalach: ต่ำกว่า 120
-  - chol, trestbps, age: สูงกว่าเฉลี่ยมาก
+  - chol: มากกว่า 300 mg/dL
+  - trestbps: มากกว่า 160 mm Hg
+  - age: มากกว่า 65 ปี
+  - sex: ชาย/หญิง
 """)
