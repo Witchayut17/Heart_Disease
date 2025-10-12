@@ -34,7 +34,7 @@ with col3:
     age = st.slider('อายุ', 1, 120, 50)
 
 if st.button('ทำนายความเสี่ยง'):
-    input_data = np.array([[
+    input_data = np.array([[  
         int(cp), float(trestbps), float(chol), float(thalach), int(exang),
         float(oldpeak), int(ca), int(thal), float(age), int(sex)
     ]])
@@ -42,10 +42,21 @@ if st.button('ทำนายความเสี่ยง'):
     try:
         prediction = model.predict(input_data)[0]
 
+        # ข้อความคำอธิบายแต่ละคลาส
+        class_dict = {
+            0: "ความเสี่ยงต่ำ ไม่เป็นโรคหัวใจ",
+            1: "ความเสี่ยงระดับต่ำถึงปานกลาง",
+            2: "ความเสี่ยงระดับปานกลาง",
+            3: "ความเสี่ยงระดับสูง",
+            4: "ความเสี่ยงสูงมาก"
+        }
+
+        result_text = class_dict.get(prediction, "ไม่ทราบคลาส")
+
         if prediction == 0:
-            st.success("✅ ผลลัพธ์: ความเสี่ยงต่ำ ไม่เป็นโรคหัวใจ")
+            st.success(f"✅ ผลลัพธ์: เป็นคลาส {prediction} — {result_text}")
         else:
-            st.error("⚠️ ผลลัพธ์: มีความเสี่ยงเป็นโรคหัวใจ (Class {})".format(prediction))
+            st.error(f"⚠️ ผลลัพธ์: เป็นคลาส {prediction} — {result_text}")
 
     except Exception as e:
         st.error(f"เกิดข้อผิดพลาดในการทำนาย: {e}")
