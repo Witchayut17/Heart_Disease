@@ -69,34 +69,29 @@ with st.container():
 
     if st.button('ทำนายความเสี่ยง'):
         input_data = np.array([[
-            int(cp),            # cp
-            float(trestbps),    # trestbps
-            float(chol),        # chol
-            float(thalach),     # thalach
-            int(exang),         # exang
-            float(oldpeak),     # oldpeak
-            int(ca),            # ca
-            int(thal),          # thal
-            float(age),         # age
-            int(sex)            # sex
+            int(cp), float(trestbps), float(chol), float(thalach), int(exang),
+            float(oldpeak), int(ca), int(thal), float(age), int(sex)
         ]])
 
         try:
             prediction = model.predict(input_data)[0]
-
-            y_pred_test = model.predict(X_test)
-            precision = precision_score(y_test, y_pred_test, average='weighted')
-            accuracy = accuracy_score(y_test, y_pred_test)
-
+            
+            # แสดงผลการทำนายจากข้อมูลที่ผู้ใช้กรอก
             if prediction == 1:
                 st.error("⚠️ ผลลัพธ์: มีความเสี่ยงเป็นโรคหัวใจ")
             else:
                 st.success("✅ ผลลัพธ์: ความเสี่ยงต่ำ ไม่เป็นโรคหัวใจ")
 
+            # แสดงผลประสิทธิภาพโมเดล (แยกจาก prediction)
+            y_pred_test = model.predict(X_test)
+            precision = precision_score(y_test, y_pred_test, average='macro')
+            accuracy = accuracy_score(y_test, y_pred_test)
+
             st.markdown(f"---\n**ประสิทธิภาพของโมเดลบนชุดทดสอบ**  \n- Precision: {precision:.2f}  \n- Accuracy: {accuracy:.2f}")
 
         except Exception as e:
             st.error(f"เกิดข้อผิดพลาดในการทำนาย: {e}")
+
 
 
     st.markdown('</div>', unsafe_allow_html=True)
