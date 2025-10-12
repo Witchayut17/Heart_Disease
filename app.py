@@ -11,6 +11,33 @@ def load_model():
 
 model = load_model()
 
+# ค่า mean และ std จากข้อมูลสถิติ
+mean_dict = {
+    'cp': 2.147541,
+    'trestbps': 0.075808,
+    'chol': -0.187700,
+    'thalach': 0.099100,
+    'exang': 0.344262,
+    'oldpeak': 0.128838,
+    'ca': 0.622951,
+    'thal': 0.967213,
+    'sex': 0.754098,
+    'age': -0.083161
+}
+
+std_dict = {
+    'cp': 0.891367,
+    'trestbps': 0.970753,
+    'chol': 0.833809,
+    'thalach': 0.923236,
+    'exang': 0.479070,
+    'oldpeak': 1.124272,
+    'ca': 0.915859,
+    'thal': 0.965526,
+    'sex': 0.434194,
+    'age': 1.063041
+}
+
 col1, col_right = st.columns([1, 1])
 
 with col1:
@@ -74,20 +101,35 @@ with col1:
         submit_button = st.form_submit_button(label='ทำนายความเสี่ยง')
 
     if submit_button:
-        input_data = np.array([[int(cp), float(trestbps), float(chol), float(thalach), int(exang),
-                                float(oldpeak), int(ca), int(thal), float(age), int(sex)]])
+        # เก็บค่าที่ป้อน (raw values)
+        raw_input = {
+            'cp': int(cp),
+            'trestbps': float(trestbps),
+            'chol': float(chol),
+            'thalach': float(thalach),
+            'exang': int(exang),
+            'oldpeak': float(oldpeak),
+            'ca': int(ca),
+            'thal': int(thal),
+            'sex': int(sex),
+            'age': float(age)
+        }
+
+        # แปลงเป็น standardized ตาม mean และ std
+        input_standardized = []
+        for feat in ['cp','trestbps','chol','thalach','exang','oldpeak','ca','thal','sex','age']:
+            val = raw_input[feat]
+            mean_val = mean_dict[feat]
+            std_val = std_dict[feat]
+            std_value = (val - mean_val) / std_val
+            input_standardized.append(std_value)
+
+        input_data = np.array([input_standardized])
 
         try:
             prediction = model.predict(input_data)[0]
 
-            # แปลงผลลัพธ์จากโมเดล (ที่เป็น 0,1,2,3 ตามเดิม) 
-            # เป็น class ใหม่ที่รวม 1+2 เป็น 1, 3+4 เป็น 2
-            # โดยเราสมมติว่าที่ train มาโมเดลมี class 0,1,2,3 (3 คือรวม 3+4 เดิม)
-            # ดังนั้นเราต้อง map ใหม่:
-            # 0 -> 0 (ความเสี่ยงต่ำ)
-            # 1, 2 -> 1 (ความเสี่ยงปานกลาง)
-            # 3 -> 2 (ความเสี่ยงสูง)
-
+            # Mapping class ใหม่
             if prediction == 0:
                 new_class = 0
             elif prediction in [1, 2]:
@@ -122,7 +164,7 @@ with col_right:
             st.markdown("""
             ### Class 0 (ความเสี่ยงต่ำ)
             - thal: ปกติ หรือ ข้อบกพร่องเล็กน้อย  
-            - ca: 0-1  
+            - ca: 0
             - cp: 1-2  
             - oldpeak: < 1.0  
             - thalach: > 150 bpm  
@@ -136,7 +178,7 @@ with col_right:
             st.markdown("""
             ### Class 1 (ความเสี่ยงปานกลาง)
             - thal: ข้อบกพร่องถาวร / กลับคืนได้  
-            - ca: 1-3  
+            - ca: 1-2  
             - cp: 2-3  
             - oldpeak: 1.0 - 2.5  
             - thalach: 120 - 150 bpm  
@@ -152,11 +194,11 @@ with col_right:
             - รวมกลุ่มผู้เคยอยู่ใน class 3 และ 4  
             - thal: ข้อบกพร่องถาวร / กลับคืนได้  
             - ca: 3  
-            - cp: 3  
+            - cp: 3-4  
             - oldpeak: > 2.5  
             - thalach: < 120 bpm  
             - exang: มี  
             - age: > 65 ปี  
-            - trestbps: > 160 mm Hg  
+            - trestbps: > 160 mm Hg
             - chol: > 300 mg/dL  
             """)
