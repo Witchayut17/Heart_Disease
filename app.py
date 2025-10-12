@@ -101,7 +101,7 @@ with col1:
             if prediction == 0:
                 st.success("✅ ผลลัพธ์: ความเสี่ยงต่ำ ไม่เป็นโรคหัวใจ (Class 0)")
             elif prediction == 3:
-                st.error(f"⚠️ ผลลัพธ์: มีความเสี่ยงสูง (รวมคลาส 3 และ 4) เป็นโรคหัวใจ (Class 3)")
+                st.error(f"⚠️ ผลลัพธ์: มีความเสี่ยงสูง เป็นโรคหัวใจ (Class 3)")
             else:
                 st.warning(f"⚠️ ผลลัพธ์: มีความเสี่ยงปานกลาง เป็นโรคหัวใจ (Class {prediction})")
 
