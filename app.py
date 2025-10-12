@@ -85,7 +85,7 @@ with st.container():
             prediction = model.predict(input_data)[0]
 
             y_pred_test = model.predict(X_test)
-            precision = precision_score(y_test, y_pred_test)
+            precision = precision_score(y_test, y_pred_test, average='weighted')
             accuracy = accuracy_score(y_test, y_pred_test)
 
             if prediction == 1:
@@ -97,5 +97,6 @@ with st.container():
 
         except Exception as e:
             st.error(f"เกิดข้อผิดพลาดในการทำนาย: {e}")
+
 
     st.markdown('</div>', unsafe_allow_html=True)
