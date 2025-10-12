@@ -1,6 +1,7 @@
 import streamlit as st
 import numpy as np
 import joblib
+import pandas as pd
 
 st.set_page_config(page_title="แบบฟอร์มประเมินความเสี่ยงโรคหัวใจ", layout="wide")
 
@@ -11,9 +12,6 @@ def load_model():
     return joblib.load('rf_model.joblib')
 
 model = load_model()
-
-# แสดง class ที่โมเดลเรียนรู้
-st.write(f"โมเดลรองรับคลาส: {model.classes_}")
 
 col1, col_right = st.columns([1, 1])
 
@@ -83,23 +81,24 @@ with col1:
             float(oldpeak), int(ca), int(thal), float(age), int(sex)
         ]])
 
-        st.write("ข้อมูลที่ส่งเข้าโมเดล:", input_data)
-
         try:
             prediction = model.predict(input_data)[0]
+            prediction_proba = model.predict_proba(input_data)[0]
+
+            st.write("### ผลลัพธ์การทำนาย")
+            st.write(f"**Class ที่ทำนาย:** {prediction}")
+
+            proba_df = pd.DataFrame({
+                'Class': [0,1,2,3,4],
+                'Probability': prediction_proba
+            })
+
+            st.table(proba_df)
 
             if prediction == 0:
                 st.success("✅ ผลลัพธ์: ความเสี่ยงต่ำ ไม่เป็นโรคหัวใจ (Class 0)")
-            elif prediction == 1:
-                st.warning("⚠️ ผลลัพธ์: ความเสี่ยงระดับต่ำ-ปานกลาง (Class 1)")
-            elif prediction == 2:
-                st.warning("⚠️ ผลลัพธ์: ความเสี่ยงระดับปานกลาง (Class 2)")
-            elif prediction == 3:
-                st.error("❗ ผลลัพธ์: ความเสี่ยงสูง (Class 3)")
-            elif prediction == 4:
-                st.error("❗ ผลลัพธ์: ความเสี่ยงสูงมาก (Class 4)")
             else:
-                st.info(f"ผลลัพธ์: คลาส {prediction}")
+                st.error(f"⚠️ ผลลัพธ์: มีความเสี่ยงเป็นโรคหัวใจ (Class {prediction})")
 
         except Exception as e:
             st.error(f"เกิดข้อผิดพลาดในการทำนาย: {e}")
