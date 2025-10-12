@@ -12,7 +12,8 @@ def load_model():
 
 model = load_model()
 
-col1, col_right = st.columns([1, 1])
+# เปลี่ยนอัตราส่วนคอลัมน์ให้ col1 แคบลง
+col1, col_right = st.columns([0.6, 1.4])
 
 with col1:
     st.subheader("ป้อนข้อมูลสุขภาพของคุณ")
@@ -75,8 +76,6 @@ with col1:
         submit_button = st.form_submit_button(label='ทำนายความเสี่ยง')
 
     if submit_button:
-        # map ช่วงค่าที่เลือกเป็นค่าตัวเลขสำหรับ model
-        # (สมมติว่า model รอค่าจริง เป็นตัวเลขตามที่เลือกใน options)
         input_data = np.array([[ 
             int(cp), float(trestbps), float(chol), float(thalach), int(exang),
             float(oldpeak), int(ca), int(thal), float(age), int(sex)
