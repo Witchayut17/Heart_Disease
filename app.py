@@ -42,10 +42,39 @@ if st.button('ทำนายความเสี่ยง'):
     try:
         prediction = model.predict(input_data)[0]
 
-        if prediction == 1:
-            st.error("⚠️ ผลลัพธ์: มีความเสี่ยงเป็นโรคหัวใจ")
-        else:
+        if prediction == 0:
             st.success("✅ ผลลัพธ์: ความเสี่ยงต่ำ ไม่เป็นโรคหัวใจ")
+        else:
+            st.error("⚠️ ผลลัพธ์: มีความเสี่ยงเป็นโรคหัวใจ (Class {})".format(prediction))
 
     except Exception as e:
         st.error(f"เกิดข้อผิดพลาดในการทำนาย: {e}")
+
+st.markdown("---")
+st.markdown("## วิธีกรอกข้อมูลตามคลาส (ประมาณค่าเฉลี่ยฟีเจอร์แต่ละคลาส)")
+
+st.markdown("""
+- **Class 0 (ความเสี่ยงต่ำ):**
+  - cp: 1 (เจ็บน้อย)
+  - ca: 0-1 (เส้นเลือดใหญ่ปกติหรือมีปัญหาน้อย)
+  - exang: ไม่มี (0)
+  - oldpeak: ต่ำกว่า 1.0
+  - thalach: สูง (150 ขึ้นไป)
+  - chol, trestbps, age: อยู่ในช่วงปกติ
+  
+- **Class 1 - 3 (ความเสี่ยงปานกลาง):**
+  - cp: 2-3
+  - ca: 1-3
+  - exang: อาจมี (0 หรือ 1)
+  - oldpeak: ประมาณ 1-2.5
+  - thalach: กลางๆ (120-150)
+  - chol, trestbps, age: ค่อยๆเพิ่มขึ้น
+  
+- **Class 4 (ความเสี่ยงสูง):**
+  - cp: 4 (เจ็บมาก)
+  - ca: 3-4 (เส้นเลือดใหญ่มีปัญหาหนัก)
+  - exang: มี (1)
+  - oldpeak: สูงกว่า 2.5
+  - thalach: ต่ำกว่า 120
+  - chol, trestbps, age: สูงกว่าเฉลี่ยมาก
+""")
