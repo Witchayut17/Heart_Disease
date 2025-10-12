@@ -73,10 +73,17 @@ with st.container():
     slope = st.selectbox('ความชันของ ST segment (slope)', options=[1, 2, 3])
 
     if st.button('ทำนายความเสี่ยง'):
-        # Prepare input as numpy array with correct shape
         input_data = np.array([[
-            float(age), int(sex), int(cp), float(trestbps), float(chol), int(fbs),
-            int(restecg), float(thalach), int(exang), float(oldpeak), int(slope), int(ca), int(thal)
+            int(cp),            # cp
+            float(trestbps),    # trestbps
+            float(chol),        # chol
+            float(thalach),     # thalach
+            int(exang),         # exang
+            float(oldpeak),     # oldpeak
+            int(ca),            # ca
+            int(thal),          # thal
+            float(age),         # age
+            int(sex)            # sex
         ]])
 
         try:
@@ -95,5 +102,6 @@ with st.container():
 
         except Exception as e:
             st.error(f"เกิดข้อผิดพลาดในการทำนาย: {e}")
+
 
     st.markdown('</div>', unsafe_allow_html=True)
