@@ -1,8 +1,8 @@
 import streamlit as st
-import pickle
 import numpy as np
-from sklearn.metrics import precision_score, accuracy_score
 import pandas as pd
+import joblib
+from sklearn.metrics import precision_score, accuracy_score
 
 st.set_page_config(page_title="แบบฟอร์มประเมินความเสี่ยงโรคหัวใจ", layout="wide")
 
@@ -23,16 +23,12 @@ st.title("แบบฟอร์มประเมินความเสี่�
 
 @st.cache_resource
 def load_model():
-    with open('rf_model.pkl', 'rb') as f:
-        model = pickle.load(f)
-    return model
+    return joblib.load('rf_model.joblib')
 
 @st.cache_resource
 def load_test_data():
     X_test = pd.read_csv('X_test.csv')
-    y_test = pd.read_csv('y_test.csv')
-    if isinstance(y_test, pd.DataFrame):
-        y_test = y_test.iloc[:, 0]
+    y_test = pd.read_csv('y_test.csv').iloc[:, 0]
     return X_test, y_test
 
 model = load_model()
