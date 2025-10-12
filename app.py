@@ -2,7 +2,6 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import joblib
-from sklearn.metrics import precision_score, accuracy_score
 
 st.set_page_config(page_title="แบบฟอร์มประเมินความเสี่ยงโรคหัวใจ", layout="wide")
 
@@ -12,24 +11,7 @@ st.title("แบบฟอร์มประเมินความเสี่�
 def load_model():
     return joblib.load('rf_model.joblib')
 
-@st.cache_resource
-def load_test_data():
-    X_test = pd.read_csv('X_test.csv')
-    y_test = pd.read_csv('y_test.csv').iloc[:, 0]
-    return X_test, y_test
-
 model = load_model()
-X_test, y_test = load_test_data()
-
-# คำนวณ precision และ accuracy บนชุดทดสอบ
-y_pred_test = model.predict(X_test)
-precision = precision_score(y_test, y_pred_test, average='macro')
-accuracy = accuracy_score(y_test, y_pred_test)
-
-st.markdown(f"### ประสิทธิภาพของโมเดลบนชุดทดสอบ")
-st.markdown(f"- Precision: {precision:.2f}")
-st.markdown(f"- Accuracy: {accuracy:.2f}")
-st.markdown("---")
 
 st.subheader("ป้อนข้อมูลสุขภาพของคุณ")
 
@@ -46,7 +28,7 @@ age = st.number_input('อายุ', 1, 120, 50)
 sex = st.selectbox('เพศ', options=[0, 1], format_func=lambda x: 'หญิง' if x == 0 else 'ชาย')
 
 if st.button('ทำนายความเสี่ยง'):
-    input_data = np.array([[
+    input_data = np.array([[ 
         int(cp), float(trestbps), float(chol), float(thalach), int(exang),
         float(oldpeak), int(ca), int(thal), float(age), int(sex)
     ]])
