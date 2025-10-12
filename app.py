@@ -15,7 +15,7 @@ model = load_model()
 # โหลดข้อมูลจริงและคำนวณสัดส่วนคลาส
 @st.cache_data
 def load_data():
-    df = pd.read_csv('output/processed_final.csv')
+    df = pd.read_csv('processed_final.csv')
     df['target'] = df['target'].apply(lambda x: 2 if x in [3,4] else 1 if x in [1,2] else 0)
     counts = df['target'].value_counts().sort_index()
     total = counts.sum()
