@@ -5,9 +5,11 @@ import joblib
 st.set_page_config(page_title="แบบฟอร์มประเมินความเสี่ยงโรคหัวใจ", layout="wide")
 st.title("แบบฟอร์มประเมินความเสี่ยงโรคหัวใจ")
 
-@st.cache_resource
+@st.cache_data(show_spinner=False)
 def load_model():
     return joblib.load('rf_model.joblib')
+
+model = load_model()
 
 model = load_model()
 
