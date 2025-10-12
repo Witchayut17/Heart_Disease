@@ -18,19 +18,41 @@ col1, col_right = st.columns([1, 1])
 with col1:
     st.subheader("ป้อนข้อมูลสุขภาพของคุณ")
     with st.form(key='heart_risk_form'):
-        thal = st.selectbox('ภาวะธาลัสซีเมีย (thal)', options=[3,6,7],
-                            format_func=lambda x: {3:"ปกติ",6:"ข้อบกพร่องถาวร",7:"ข้อบกพร่องกลับคืนได้"}[x])
-        cp = st.selectbox('ประเภทอาการเจ็บหน้าอก (cp)', options=[1,2,3,4])
-        ca = st.selectbox('จำนวนเส้นเลือดใหญ่ที่มีปัญหา (ca)', options=[0,1,2,3,4])
-        exang = st.selectbox('เจ็บหน้าอกจากออกกำลังกาย (exang)', options=[0,1], format_func=lambda x: "ไม่มี" if x==0 else "มี")
-        sex = st.selectbox('เพศ', options=[0,1], format_func=lambda x: 'หญิง' if x==0 else 'ชาย')
-        oldpeak = st.slider('ST depression (oldpeak)', 0.0, 10.0, 1.0, 0.1)
-        thalach = st.slider('อัตราการเต้นหัวใจสูงสุด (thalach)', 60, 250, 150)
-        chol = st.slider('คอเลสเตอรอล (chol)', 100, 600, 200)
-        trestbps = st.slider('ความดันโลหิตขณะพัก (trestbps)', 50, 250, 120)
-        age = st.slider('อายุ', 1, 120, 50)
+        # inline แถวแรก dropdown เล็กๆ รวมกัน
+        col_cp, col_ca, col_exang, col_sex = st.columns([1,1,1,1])
+        with col_cp:
+            cp = st.selectbox('ประเภทอาการเจ็บหน้าอก (cp)', options=[1,2,3,4])
+        with col_ca:
+            ca = st.selectbox('จำนวนเส้นเลือดใหญ่ที่มีปัญหา (ca)', options=[0,1,2,3,4])
+        with col_exang:
+            exang = st.selectbox('เจ็บหน้าอกจากออกกำลังกาย (exang)', options=[0,1], format_func=lambda x: "ไม่มี" if x==0 else "มี")
+        with col_sex:
+            sex = st.selectbox('เพศ', options=[0,1], format_func=lambda x: 'หญิง' if x==0 else 'ชาย')
+
+        # แถวถัดมา 2 ตัว slider inline
+        col_oldpeak, col_thalach = st.columns(2)
+        with col_oldpeak:
+            oldpeak = st.slider('ST depression (oldpeak)', 0.0, 10.0, 1.0, 0.1)
+        with col_thalach:
+            thalach = st.slider('อัตราการเต้นหัวใจสูงสุด (thalach)', 60, 250, 150)
+
+        # แถวถัดมา 2 ตัว slider inline
+        col_chol, col_trestbps = st.columns(2)
+        with col_chol:
+            chol = st.slider('คอเลสเตอรอล (chol)', 100, 600, 200)
+        with col_trestbps:
+            trestbps = st.slider('ความดันโลหิตขณะพัก (trestbps)', 50, 250, 120)
+
+        # แถวสุดท้าย อายุกับ thal inline
+        col_age, col_thal = st.columns(2)
+        with col_thal:
+            thal = st.selectbox('ภาวะธาลัสซีเมีย (thal)', options=[3,6,7],
+                                format_func=lambda x: {3:"ปกติ",6:"ข้อบกพร่องถาวร",7:"ข้อบกพร่องกลับคืนได้"}[x])
+        with col_age:
+            age = st.slider('อายุ', 1, 120, 50)
 
         submit_button = st.form_submit_button(label='ทำนายความเสี่ยง')
+
 
     if submit_button:
         input_data = np.array([[ 
