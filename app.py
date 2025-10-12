@@ -130,8 +130,11 @@ with col1:
 
         try:
             prediction = model.predict(input_data)[0]
+            proba = model.predict_proba(input_data)[0]
 
-            # Mapping class ใหม่
+            # แสดงความน่าจะเป็น
+            st.write(f"ความน่าจะเป็นของแต่ละคลาส: Class 0: {proba[0]:.2f}, Class 1: {proba[1]:.2f}, Class 2: {proba[2]:.2f}")
+
             if prediction == 0:
                 new_class = 0
             elif prediction in [1, 2]:
