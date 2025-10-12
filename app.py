@@ -2,6 +2,7 @@ import os
 import streamlit as st
 import pickle
 import numpy as np
+import pandas as pd
 from sklearn.metrics import precision_score, accuracy_score
 
 st.set_page_config(page_title="แบบฟอร์มประเมินความเสี่ยงโรคหัวใจ", layout="wide")
@@ -27,17 +28,15 @@ def load_model():
         model = pickle.load(f)
     return model
 
-model = load_model()
-
 @st.cache_resource
 def load_test_data():
-    import pandas as pd
     X_test = pd.read_csv('output/X_test.csv')
     y_test = pd.read_csv('output/y_test.csv')
     if isinstance(y_test, pd.DataFrame):
         y_test = y_test.iloc[:, 0]
     return X_test, y_test
 
+model = load_model()
 X_test, y_test = load_test_data()
 
 with st.container():
@@ -47,7 +46,8 @@ with st.container():
 
     c1, c2, c3 = st.columns(3)
     with c1:
-        thal = st.selectbox('ภาวะธาลัสซีเมีย (thal)', options=[3, 6, 7], format_func=lambda x: {3:"ปกติ",6:"ข้อบกพร่องถาวร",7:"ข้อบกพร่องกลับคืนได้"}[x])
+        thal = st.selectbox('ภาวะธาลัสซีเมีย (thal)', options=[3, 6, 7], 
+                            format_func=lambda x: {3:"ปกติ",6:"ข้อบกพร่องถาวร",7:"ข้อบกพร่องกลับคืนได้"}[x])
     with c2:
         cp = st.selectbox('ประเภทอาการเจ็บหน้าอก (cp)', options=[1, 2, 3, 4])
     with c3:
@@ -81,9 +81,10 @@ with st.container():
     if st.button('ทำนายความเสี่ยง'):
         input_data = np.array([[age, sex, cp, trestbps, chol, fbs, restecg, thalach,
                                 exang, oldpeak, slope, ca, thal]])
-        # ไม่ใช้ scaler เพราะไม่มีแล้ว
+        
         prediction = model.predict(input_data)[0]
 
+        # ประเมินโมเดลบนชุดทดสอบ
         y_pred_test = model.predict(X_test)
         precision = precision_score(y_test, y_pred_test)
         accuracy = accuracy_score(y_test, y_pred_test)
