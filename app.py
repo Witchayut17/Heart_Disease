@@ -96,16 +96,7 @@ with col1:
             proba = model.predict_proba(input_data)[0]
             st.write(f"ความน่าจะเป็นของแต่ละคลาส: Class 0: {proba[0]:.2f}, Class 1: {proba[1]:.2f}, Class 2: {proba[2]:.2f}")
 
-            max_proba_class = np.argmax(proba)
-            threshold_1 = 0.15
-            threshold_2 = 0.15
-
-            if max_proba_class == 2 and proba[2] > threshold_2:
-                new_class = 2
-            elif max_proba_class == 1 and proba[1] > threshold_1:
-                new_class = 1
-            else:
-                new_class = 0
+            new_class = int(np.argmax(proba))
 
             st.write("### ผลลัพธ์การทำนาย")
             if new_class == 0:
