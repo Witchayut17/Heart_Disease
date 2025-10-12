@@ -12,7 +12,8 @@ def load_model():
 
 model = load_model()
 
-col1, col_right = st.columns([1, 1])  # แบ่งครึ่ง ๆ ให้ฝั่งขวากว้างพอสำหรับ 3 คอลัมน์ข้างใน
+# กำหนดคอลัมน์ ฝั่งซ้าย(ฟอร์ม) และขวา (ข้อมูลสรุป)
+col1, col_right = st.columns([1, 1])
 
 with col1:
     st.subheader("ป้อนข้อมูลสุขภาพของคุณ")
@@ -59,7 +60,7 @@ with col_right:
         - Class 4: 4 ตัวอย่าง (6.56%)
         """)
 
-        col_a, col_b, col_c = st.columns(3)
+        col_a, col_b, col_c = st.columns([1, 1, 1])
 
         with col_a:
             st.markdown("""
