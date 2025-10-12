@@ -12,8 +12,7 @@ def load_model():
 
 model = load_model()
 
-# เปลี่ยนอัตราส่วนคอลัมน์ให้ col1 แคบลง
-col1, col_right = st.columns([0.6, 1.4])
+col1, col_right = st.columns([1, 1])
 
 with col1:
     st.subheader("ป้อนข้อมูลสุขภาพของคุณ")
@@ -76,6 +75,8 @@ with col1:
         submit_button = st.form_submit_button(label='ทำนายความเสี่ยง')
 
     if submit_button:
+        # map ช่วงค่าที่เลือกเป็นค่าตัวเลขสำหรับ model
+        # (สมมติว่า model รอค่าจริง เป็นตัวเลขตามที่เลือกใน options)
         input_data = np.array([[ 
             int(cp), float(trestbps), float(chol), float(thalach), int(exang),
             float(oldpeak), int(ca), int(thal), float(age), int(sex)
@@ -109,7 +110,7 @@ with col_right:
         with col_a:
             st.markdown("""
             ### Class 0 (ความเสี่ยงต่ำ)
-            - thal: ปกติ หรือ ข้อบกพร่องเล็กน้อย (3 หรือ 6)
+            - thal: ปกติ หรือ ข้อบกพร่องเล็กน้อย
             - ca: 0-1
             - cp: 1-2 (เจ็บน้อยถึงปานกลาง)
             - oldpeak: < 1.0
@@ -124,7 +125,7 @@ with col_right:
         with col_b:
             st.markdown("""
             ### Class 1 - 3 (ความเสี่ยงปานกลาง)
-            - thal: ข้อบกพร่องถาวร หรือ กลับคืนได้ (6 หรือ 7)
+            - thal: ข้อบกพร่องถาวร หรือ กลับคืนได้
             - ca: 1-3
             - cp: 2-3
             - oldpeak: 1.0-2.5
@@ -139,7 +140,7 @@ with col_right:
         with col_c:
             st.markdown("""
             ### Class 4 (ความเสี่ยงสูง)
-            - thal: ข้อบกพร่องถาวร หรือ กลับคืนได้ (6 หรือ 7)
+            - thal: ข้อบกพร่องถาวร หรือ กลับคืนได้
             - ca: 3-4
             - cp: 4
             - oldpeak: > 2.5
