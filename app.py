@@ -109,44 +109,44 @@ with col_right:
         with col_a:
             st.markdown("""
             ### Class 0 (ความเสี่ยงต่ำ)
-            - cp: 1-2 (เจ็บน้อยถึงปานกลาง)
+            - thal: ปกติ หรือ ข้อบกพร่องเล็กน้อย (3 หรือ 6)
             - ca: 0-1
-            - exang: 0 (ไม่มี)
+            - cp: 1-2 (เจ็บน้อยถึงปานกลาง)
             - oldpeak: < 1.0
             - thalach: > 150 bpm
-            - chol: < 240 mg/dL
-            - trestbps: < 130 mm Hg
+            - exang: 0 (ไม่มี)
             - age: < 50 ปี
             - sex: ชาย/หญิง
-            - thal: ปกติ หรือ ข้อบกพร่องเล็กน้อย (3 หรือ 6)
+            - trestbps: < 130 mm Hg
+            - chol: < 240 mg/dL
             """)
 
         with col_b:
             st.markdown("""
             ### Class 1 - 3 (ความเสี่ยงปานกลาง)
-            - cp: 2-3
+            - thal: ข้อบกพร่องถาวร หรือ กลับคืนได้ (6 หรือ 7)
             - ca: 1-3
-            - exang: 0 หรือ 1
+            - cp: 2-3
             - oldpeak: 1.0-2.5
             - thalach: 120-150 bpm
-            - chol: 240-300 mg/dL
-            - trestbps: 130-160 mm Hg
+            - exang: 0 หรือ 1
             - age: 50-65 ปี
             - sex: ชาย/หญิง
-            - thal: ข้อบกพร่องถาวร หรือ กลับคืนได้ (6 หรือ 7)
+            - trestbps: 130-160 mm Hg
+            - chol: 240-300 mg/dL
             """)
 
         with col_c:
             st.markdown("""
             ### Class 4 (ความเสี่ยงสูง)
-            - cp: 4
+            - thal: ข้อบกพร่องถาวร หรือ กลับคืนได้ (6 หรือ 7)
             - ca: 3-4
-            - exang: 1 (มี)
+            - cp: 4
             - oldpeak: > 2.5
             - thalach: < 120 bpm
-            - chol: > 300 mg/dL
-            - trestbps: > 160 mm Hg
+            - exang: 1 (มี)
             - age: > 65 ปี
             - sex: ชาย/หญิง
-            - thal: ข้อบกพร่องถาวร หรือ กลับคืนได้ (6 หรือ 7)
+            - trestbps: > 160 mm Hg
+            - chol: > 300 mg/dL
             """)
