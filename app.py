@@ -5,50 +5,22 @@ import joblib
 st.set_page_config(page_title="แบบฟอร์มประเมินความเสี่ยงโรคหัวใจ", layout="wide")
 st.title("แบบฟอร์มประเมินความเสี่ยงโรคหัวใจ")
 
-@st.cache_data(show_spinner=False)
+@st.cache_resource
 def load_model():
     return joblib.load('rf_model.joblib')
 
 model = load_model()
-
-model = load_model()
-
-# ค่า mean และ std จากข้อมูลสถิติ
-mean_dict = {
-    'cp': 2.147541,
-    'trestbps': 0.075808,
-    'chol': -0.187700,
-    'thalach': 0.099100,
-    'exang': 0.344262,
-    'oldpeak': 0.128838,
-    'ca': 0.622951,
-    'thal': 0.967213,
-    'sex': 0.754098,
-    'age': -0.083161
-}
-
-std_dict = {
-    'cp': 0.891367,
-    'trestbps': 0.970753,
-    'chol': 0.833809,
-    'thalach': 0.923236,
-    'exang': 0.479070,
-    'oldpeak': 1.124272,
-    'ca': 0.915859,
-    'thal': 0.965526,
-    'sex': 0.434194,
-    'age': 1.063041
-}
 
 col1, col_right = st.columns([1, 1])
 
 with col1:
     st.subheader("ป้อนข้อมูลสุขภาพของคุณ")
     with st.form(key='heart_risk_form'):
+        # --- ช่องกรอกข้อมูล (ตัวอย่างเหมือนเดิม) ---
         thal = st.selectbox('ภาวะธาลัสซีเมีย (thal)', options=[3,6,7],
                             format_func=lambda x: {3:"ปกติ",6:"ข้อบกพร่องถาวร",7:"ข้อบกพร่องกลับคืนได้"}[x])
 
-        ca = st.selectbox('จำนวนเส้นเลือดใหญ่ที่มีปัญหา (ca)', options=[0,1,2,3,4])
+        ca = st.selectbox('จำนวนเส้นเลือดใหญ่ที่มีปัญหา (ca)', options=[0,1,2,3])
 
         cp = st.selectbox('ประเภทอาการเจ็บหน้าอก (cp)', options=[1,2,3,4])
 
@@ -103,44 +75,23 @@ with col1:
         submit_button = st.form_submit_button(label='ทำนายความเสี่ยง')
 
     if submit_button:
-        # เก็บค่าที่ป้อน (raw values)
-        raw_input = {
-            'cp': int(cp),
-            'trestbps': float(trestbps),
-            'chol': float(chol),
-            'thalach': float(thalach),
-            'exang': int(exang),
-            'oldpeak': float(oldpeak),
-            'ca': int(ca),
-            'thal': int(thal),
-            'sex': int(sex),
-            'age': float(age)
-        }
-
-        # แปลงเป็น standardized ตาม mean และ std
-        input_standardized = []
-        for feat in ['cp','trestbps','chol','thalach','exang','oldpeak','ca','thal','sex','age']:
-            val = raw_input[feat]
-            mean_val = mean_dict[feat]
-            std_val = std_dict[feat]
-            std_value = (val - mean_val) / std_val
-            input_standardized.append(std_value)
-
-        input_data = np.array([input_standardized])
+        input_data = np.array([[int(cp), float(trestbps), float(chol), float(thalach), int(exang),
+                                float(oldpeak), int(ca), int(thal), float(age), int(sex)]])
 
         try:
-            prediction = model.predict(input_data)[0]
             proba = model.predict_proba(input_data)[0]
-
-            # แสดงความน่าจะเป็น
             st.write(f"ความน่าจะเป็นของแต่ละคลาส: Class 0: {proba[0]:.2f}, Class 1: {proba[1]:.2f}, Class 2: {proba[2]:.2f}")
 
-            if prediction == 0:
-                new_class = 0
-            elif prediction in [1, 2]:
+            # กำหนด threshold สำหรับแต่ละคลาส (ปรับได้ตามต้องการ)
+            threshold_1 = 0.15
+            threshold_2 = 0.15
+
+            if proba[2] > threshold_2:
+                new_class = 2
+            elif proba[1] > threshold_1:
                 new_class = 1
             else:
-                new_class = 2
+                new_class = 0
 
             st.write("### ผลลัพธ์การทำนาย")
             if new_class == 0:
