@@ -17,7 +17,6 @@ col1, col_right = st.columns([1, 1])
 with col1:
     st.subheader("ป้อนข้อมูลสุขภาพของคุณ")
     with st.form(key='heart_risk_form'):
-        # จัดเรียงตามความสำคัญ feature
         thal = st.selectbox('ภาวะธาลัสซีเมีย (thal)', options=[3,6,7],
                             format_func=lambda x: {3:"ปกติ",6:"ข้อบกพร่องถาวร",7:"ข้อบกพร่องกลับคืนได้"}[x])
 
@@ -25,32 +24,62 @@ with col1:
 
         cp = st.selectbox('ประเภทอาการเจ็บหน้าอก (cp)', options=[1,2,3,4])
 
-        oldpeak = st.slider('ST depression (oldpeak)', 0.0, 10.0, 1.0, 0.1)
+        oldpeak = st.selectbox('ST depression (oldpeak)', options=[
+            0.0, 0.5, 1.0, 2.0, 3.0, 5.0], format_func=lambda x: (
+                "< 0.5" if x == 0.0 else
+                "0.5 - 1.0" if x == 0.5 else
+                "1.0 - 2.0" if x == 1.0 else
+                "2.0 - 3.0" if x == 2.0 else
+                "3.0 - 5.0" if x == 3.0 else
+                "> 5.0"
+            ))
 
-        thalach = st.slider('อัตราการเต้นหัวใจสูงสุด (thalach)', 60, 250, 150)
+        thalach = st.selectbox('อัตราการเต้นหัวใจสูงสุด (thalach)', options=[
+            100, 120, 150, 180, 200], format_func=lambda x: (
+                "< 120 bpm" if x == 100 else
+                "120 - 150 bpm" if x == 120 else
+                "150 - 180 bpm" if x == 150 else
+                "180 - 200 bpm" if x == 180 else
+                "> 200 bpm"
+            ))
 
         exang = st.selectbox('เจ็บหน้าอกจากออกกำลังกาย (exang)', options=[0,1], format_func=lambda x: "ไม่มี" if x==0 else "มี")
 
-        # group age กับ sex ให้อยู่แถวเดียวกัน (inline)
-        age, sex = st.columns([2, 1])
-        with age:
-            age_val = st.slider('อายุ', 1, 120, 50)
-        with sex:
-            sex_val = st.selectbox('เพศ', options=[0,1], format_func=lambda x: 'หญิง' if x==0 else 'ชาย')
+        age = st.selectbox('ช่วงอายุ', options=[40, 55, 70, 85], format_func=lambda x: (
+            "< 50 ปี" if x == 40 else
+            "50 - 65 ปี" if x == 55 else
+            "65 - 85 ปี" if x == 70 else
+            "> 85 ปี"
+        ))
 
-        # group trestbps กับ chol ให้อยู่แถวเดียวกัน (inline)
-        trestbps, chol = st.columns(2)
-        with trestbps:
-            trestbps_val = st.slider('ความดันโลหิตขณะพัก (trestbps)', 50, 250, 120)
-        with chol:
-            chol_val = st.slider('คอเลสเตอรอล (chol)', 100, 600, 200)
+        sex = st.selectbox('เพศ', options=[0,1], format_func=lambda x: 'หญิง' if x==0 else 'ชาย')
+
+        trestbps = st.selectbox('ความดันโลหิตขณะพัก (trestbps)', options=[
+            110, 130, 150, 170, 200], format_func=lambda x: (
+                "< 130 mm Hg" if x == 110 else
+                "130 - 150 mm Hg" if x == 130 else
+                "150 - 170 mm Hg" if x == 150 else
+                "170 - 200 mm Hg" if x == 170 else
+                "> 200 mm Hg"
+            ))
+
+        chol = st.selectbox('คอเลสเตอรอล (chol)', options=[
+            200, 250, 300, 350, 400], format_func=lambda x: (
+                "< 240 mg/dL" if x == 200 else
+                "240 - 300 mg/dL" if x == 250 else
+                "300 - 350 mg/dL" if x == 300 else
+                "350 - 400 mg/dL" if x == 350 else
+                "> 400 mg/dL"
+            ))
 
         submit_button = st.form_submit_button(label='ทำนายความเสี่ยง')
 
     if submit_button:
+        # map ช่วงค่าที่เลือกเป็นค่าตัวเลขสำหรับ model
+        # (สมมติว่า model รอค่าจริง เป็นตัวเลขตามที่เลือกใน options)
         input_data = np.array([[ 
-            int(cp), float(trestbps_val), float(chol_val), float(thalach), int(exang),
-            float(oldpeak), int(ca), int(thal), float(age_val), int(sex_val)
+            int(cp), float(trestbps), float(chol), float(thalach), int(exang),
+            float(oldpeak), int(ca), int(thal), float(age), int(sex)
         ]])
 
         try:
@@ -121,4 +150,3 @@ with col_right:
             - sex: ชาย/หญิง
             - thal: ข้อบกพร่องถาวร หรือ กลับคืนได้ (6 หรือ 7)
             """)
-
