@@ -73,19 +73,27 @@ with st.container():
     slope = st.selectbox('ความชันของ ST segment (slope)', options=[1, 2, 3])
 
     if st.button('ทำนายความเสี่ยง'):
-        input_data = np.array([[age, sex, cp, trestbps, chol, fbs, restecg, thalach,
-                                exang, oldpeak, slope, ca, thal]])
-        prediction = model.predict(input_data)[0]
+        # Prepare input as numpy array with correct shape
+        input_data = np.array([[
+            float(age), int(sex), int(cp), float(trestbps), float(chol), int(fbs),
+            int(restecg), float(thalach), int(exang), float(oldpeak), int(slope), int(ca), int(thal)
+        ]])
 
-        y_pred_test = model.predict(X_test)
-        precision = precision_score(y_test, y_pred_test)
-        accuracy = accuracy_score(y_test, y_pred_test)
+        try:
+            prediction = model.predict(input_data)[0]
 
-        if prediction == 1:
-            st.error("⚠️ ผลลัพธ์: มีความเสี่ยงเป็นโรคหัวใจ")
-        else:
-            st.success("✅ ผลลัพธ์: ความเสี่ยงต่ำ ไม่เป็นโรคหัวใจ")
+            y_pred_test = model.predict(X_test)
+            precision = precision_score(y_test, y_pred_test)
+            accuracy = accuracy_score(y_test, y_pred_test)
 
-        st.markdown(f"---\n**ประสิทธิภาพของโมเดลบนชุดทดสอบ**  \n- Precision: {precision:.2f}  \n- Accuracy: {accuracy:.2f}")
+            if prediction == 1:
+                st.error("⚠️ ผลลัพธ์: มีความเสี่ยงเป็นโรคหัวใจ")
+            else:
+                st.success("✅ ผลลัพธ์: ความเสี่ยงต่ำ ไม่เป็นโรคหัวใจ")
+
+            st.markdown(f"---\n**ประสิทธิภาพของโมเดลบนชุดทดสอบ**  \n- Precision: {precision:.2f}  \n- Accuracy: {accuracy:.2f}")
+
+        except Exception as e:
+            st.error(f"เกิดข้อผิดพลาดในการทำนาย: {e}")
 
     st.markdown('</div>', unsafe_allow_html=True)
