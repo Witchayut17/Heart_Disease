@@ -58,14 +58,14 @@ with col1:
 
         exang = st.selectbox('เจ็บหน้าอกจากออกกำลังกาย(exang)', options=[0,1], format_func=lambda x: "ไม่มี" if x==0 else "มี")
 
-        age = st.selectbox('ช่วงอายุ', options=[40, 55, 70, 85], format_func=lambda x: (
+        age = st.selectbox('ช่วงอายุ(age)', options=[40, 55, 70, 85], format_func=lambda x: (
             "< 50 ปี" if x == 40 else
             "50 - 65 ปี" if x == 55 else
             "65 - 85 ปี" if x == 70 else
             "> 85 ปี"
         ))
 
-        sex = st.selectbox('เพศ', options=[0,1], format_func=lambda x: 'หญิง' if x==0 else 'ชาย')
+        sex = st.selectbox('เพศ(sex)', options=[0,1], format_func=lambda x: 'หญิง' if x==0 else 'ชาย')
 
         trestbps = st.selectbox('ความดันโลหิตขณะพัก(trestbps)', options=[110, 130, 150, 170, 200],
                                 format_func=lambda x: (
