@@ -25,7 +25,7 @@ def load_data():
 
 counts, (percent_0, percent_1, percent_2) = load_data()
 
-col1, col_right = st.columns([0.8, 2.2])
+col1, col_right = st.columns([1, 2])
 
 with col1:
     st.subheader("ป้อนข้อมูลสุขภาพของคุณ")
