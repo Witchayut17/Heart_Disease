@@ -30,7 +30,7 @@ col1, col_right = st.columns([1, 2])
 with col1:
     st.subheader("ป้อนข้อมูลสุขภาพของคุณ")
     with st.form(key='heart_risk_form'):
-        thal = st.selectbox('ภาวะธาลัสซีเมีย (thal)', options=[3,6,7],
+        thal = st.selectbox('ภาวะธาลัสซีเมีย(thal)', options=[3,6,7],
                             format_func=lambda x: {3:"ปกติ",6:"เป็นถาวร",7:"เป็นแต่หายได้"}[x])
 
         ca = st.selectbox('จำนวนเส้นเลือดใหญ่ที่มีปัญหา(ca)', options=[0,1,2,3])
